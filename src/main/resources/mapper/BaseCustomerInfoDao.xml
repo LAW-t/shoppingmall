@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mall.dao.BaseCustomerInfoDao">
+
+    <resultMap type="com.example.mall.entity.BaseCustomerInfo" id="BaseCustomerInfoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="realName" column="real_name" jdbcType="VARCHAR"/>
+        <result property="addrProvince" column="addr_province" jdbcType="VARCHAR"/>
+        <result property="addrCity" column="addr_city" jdbcType="VARCHAR"/>
+        <result property="addrDistrict" column="addr_district" jdbcType="VARCHAR"/>
+        <result property="addrDetailed" column="addr_detailed" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+        <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+        <result property="version" column="version" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into mall.base_customer_info(type, phone, real_name, addr_province, addr_city, addr_district,
+        addr_detailed, remark, email, create_time, update_time, create_by, update_by, del_flag, version)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.type}, #{entity.phone}, #{entity.realName}, #{entity.addrProvince}, #{entity.addrCity},
+            #{entity.addrDistrict}, #{entity.addrDetailed}, #{entity.remark}, #{entity.email}, #{entity.createTime},
+            #{entity.updateTime}, #{entity.createBy}, #{entity.updateBy}, #{entity.delFlag}, #{entity.version})
+        </foreach>
+    </insert>
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into mall.base_customer_info(type, phone, real_name, addr_province, addr_city, addr_district,
+        addr_detailed, remark, email, create_time, update_time, create_by, update_by, del_flag, version)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.type}, #{entity.phone}, #{entity.realName}, #{entity.addrProvince}, #{entity.addrCity},
+            #{entity.addrDistrict}, #{entity.addrDetailed}, #{entity.remark}, #{entity.email}, #{entity.createTime},
+            #{entity.updateTime}, #{entity.createBy}, #{entity.updateBy}, #{entity.delFlag}, #{entity.version})
+        </foreach>
+        on duplicate key update
+        type = values(type) , phone = values(phone) , real_name = values(real_name) , addr_province =
+        values(addr_province) , addr_city = values(addr_city) , addr_district = values(addr_district) , addr_detailed =
+        values(addr_detailed) , remark = values(remark) , email = values(email) , create_time = values(create_time) ,
+        update_time = values(update_time) , create_by = values(create_by) , update_by = values(update_by) , del_flag =
+        values(del_flag) , version = values(version)
+    </insert>
+
+</mapper>
+
