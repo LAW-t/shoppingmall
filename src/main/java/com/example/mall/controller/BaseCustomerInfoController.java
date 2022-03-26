@@ -6,6 +6,7 @@ import com.example.mall.entity.BaseCustomerInfo;
 import com.example.mall.service.BaseCustomerInfoService;
 import com.example.mall.utils.Result;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +29,7 @@ import javax.annotation.Resource;
  * @since 2022-03-14 10:03:01
  */
 @RestController
-@RequestMapping("baseCustomerInfo")
+@RequestMapping("customerInfo")
 public class BaseCustomerInfoController {
   /** 服务对象 */
   @Resource private BaseCustomerInfoService baseCustomerInfoService;
@@ -41,6 +42,7 @@ public class BaseCustomerInfoController {
    * @return 所有数据
    */
   @GetMapping
+  @PreAuthorize("hasAnyAuthority('admin', 'user')")
   public Result selectAll(Page<BaseCustomerInfo> page, BaseCustomerInfo baseCustomerInfo) {
     return Result.of(this.baseCustomerInfoService.page(page, new QueryWrapper<>(baseCustomerInfo)));
   }
@@ -52,6 +54,7 @@ public class BaseCustomerInfoController {
    * @return 单条数据
    */
   @GetMapping("{id}")
+  @PreAuthorize("hasAnyAuthority('admin')")
   public Result selectOne(@PathVariable Serializable id) {
     return Result.of(this.baseCustomerInfoService.getById(id));
   }
@@ -63,6 +66,7 @@ public class BaseCustomerInfoController {
    * @return 新增结果
    */
   @PostMapping
+  @PreAuthorize("hasAnyAuthority('admin', 'user')")
   public Result insert(@RequestBody BaseCustomerInfo baseCustomerInfo) {
     return Result.of(this.baseCustomerInfoService.save(baseCustomerInfo));
   }
@@ -74,6 +78,7 @@ public class BaseCustomerInfoController {
    * @return 修改结果
    */
   @PutMapping
+  @PreAuthorize("hasAnyAuthority('admin', 'user')")
   public Result update(@RequestBody BaseCustomerInfo baseCustomerInfo) {
     return Result.of(this.baseCustomerInfoService.updateById(baseCustomerInfo));
   }
@@ -85,6 +90,7 @@ public class BaseCustomerInfoController {
    * @return 删除结果
    */
   @DeleteMapping
+  @PreAuthorize("hasAnyAuthority('admin', 'user')")
   public Result delete(@RequestParam("idList") List<Long> idList) {
     return Result.of(this.baseCustomerInfoService.removeByIds(idList));
   }

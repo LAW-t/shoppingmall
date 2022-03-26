@@ -15,8 +15,6 @@
         <result property="email" column="email" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
-        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
         <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
         <result property="version" column="version" jdbcType="INTEGER"/>
     </resultMap>
@@ -24,31 +22,59 @@
     <!-- 批量插入 -->
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
         insert into mall.base_customer_info(type, phone, real_name, addr_province, addr_city, addr_district,
-        addr_detailed, remark, email, create_time, update_time, create_by, update_by, del_flag, version)
+        addr_detailed, remark, email, create_time, update_time, del_flag, version)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.type}, #{entity.phone}, #{entity.realName}, #{entity.addrProvince}, #{entity.addrCity},
             #{entity.addrDistrict}, #{entity.addrDetailed}, #{entity.remark}, #{entity.email}, #{entity.createTime},
-            #{entity.updateTime}, #{entity.createBy}, #{entity.updateBy}, #{entity.delFlag}, #{entity.version})
+            #{entity.updateTime}, #{entity.delFlag}, #{entity.version})
         </foreach>
     </insert>
     <!-- 批量插入或按主键更新 -->
-    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into mall.base_customer_info(type, phone, real_name, addr_province, addr_city, addr_district,
-        addr_detailed, remark, email, create_time, update_time, create_by, update_by, del_flag, version)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.type}, #{entity.phone}, #{entity.realName}, #{entity.addrProvince}, #{entity.addrCity},
-            #{entity.addrDistrict}, #{entity.addrDetailed}, #{entity.remark}, #{entity.email}, #{entity.createTime},
-            #{entity.updateTime}, #{entity.createBy}, #{entity.updateBy}, #{entity.delFlag}, #{entity.version})
-        </foreach>
-        on duplicate key update
-        type = values(type) , phone = values(phone) , real_name = values(real_name) , addr_province =
-        values(addr_province) , addr_city = values(addr_city) , addr_district = values(addr_district) , addr_detailed =
-        values(addr_detailed) , remark = values(remark) , email = values(email) , create_time = values(create_time) ,
-        update_time = values(update_time) , create_by = values(create_by) , update_by = values(update_by) , del_flag =
-        values(del_flag) , version = values(version)
+    <insert id="updateOne" keyProperty="id" useGeneratedKeys="true">
+        update base_customer_info
+        <set>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="realName != null and realName != ''">
+                real_name = #{realName},
+            </if>
+            <if test="addrProvince != null and addrProvince != ''">
+                addr_province = #{addrProvince},
+            </if>
+            <if test="addrCity != null and addrCity != ''">
+                addr_city = #{addrCity},
+            </if>
+            <if test="addrDistrict != null and addrDistrict != ''">
+                addr_district = #{addrDistrict},
+            </if>
+            <if test="addrDetailed != null and addrDetailed != ''">
+                addr_detailed = #{addrDetailed},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag},
+            </if>
+            <if test="version != null">
+                version = #{version},
+            </if>
+        </set>
+        where id = #{id}
     </insert>
 
 </mapper>
-

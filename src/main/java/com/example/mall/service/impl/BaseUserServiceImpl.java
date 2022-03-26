@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 /**
  * 用户表(BaseUser)表服务实现类
  *
- * @author tang
- * @since 2022-03-14 10:03:01
+ * @author makejava
+ * @since 2022-03-26 15:18:11
  */
 @Service("baseUserService")
 public class BaseUserServiceImpl extends ServiceImpl<BaseUserDao, BaseUser>

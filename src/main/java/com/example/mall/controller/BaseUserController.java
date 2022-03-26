@@ -2,12 +2,10 @@ package com.example.mall.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.mall.annotations.UserInfo;
 import com.example.mall.entity.BaseUser;
 import com.example.mall.service.BaseUserService;
 import com.example.mall.utils.Result;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,10 +25,10 @@ import javax.annotation.Resource;
  * 用户表(BaseUser)表控制层
  *
  * @author tang
- * @since 2022-03-14 10:03:01
+ * @since 2022-03-25 19:25:33
  */
 @RestController
-@RequestMapping("user")
+@RequestMapping("baseUser")
 public class BaseUserController {
   /** 服务对象 */
   @Resource private BaseUserService baseUserService;
@@ -54,10 +52,8 @@ public class BaseUserController {
    * @return 单条数据
    */
   @GetMapping("{id}")
-  @PreAuthorize("hasAuthority('admin')")
-  public Result selectOne(@PathVariable Serializable id, @UserInfo BaseUser user) {
-    return Result.of(user);
-    //    return Result.of(this.baseUserService.getById(id));
+  public Result selectOne(@PathVariable Serializable id) {
+    return Result.of(this.baseUserService.getById(id));
   }
 
   /**

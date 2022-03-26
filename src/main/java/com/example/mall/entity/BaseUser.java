@@ -5,11 +5,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,8 +18,8 @@ import lombok.NoArgsConstructor;
 /**
  * 用户表(BaseUser)表实体类
  *
- * @author tang
- * @since 2022-03-14 10:03:01
+ * @author makejava
+ * @since 2022-03-26 15:18:11
  */
 @Data
 @NoArgsConstructor
@@ -28,7 +27,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @TableName("base_user")
 public class BaseUser extends Model<BaseUser> {
-  private static final long serialVersionUID = -2627771418848719527L;
+  private static final long serialVersionUID = 280098755402820485L;
   /** 编号 * */
   @TableId(value = "id", type = IdType.AUTO)
   private Long id;
@@ -48,18 +47,17 @@ public class BaseUser extends Model<BaseUser> {
   private String nickname;
   /** 创建时间 * */
   @TableField(fill = FieldFill.INSERT)
-  private Date createTime;
-  /** 更新时间 * */
-  @TableField(fill = FieldFill.INSERT_UPDATE)
-  private Date updateTime;
+  private LocalDateTime createTime;
   /** 创建用户id * */
   private Long createBy;
   /** 更新用户id * */
   private Long updateBy;
   /** 删除标记（0表示未删除，1表示已删除） * */
   private Integer delFlag;
-  /** 版本号 * */
-  @Version private Integer version;
+  /** 最后一次登录时间 * */
+  private LocalDateTime lastLoginTime;
+  /** ip地址 * */
+  private Long lastLoginIp;
 
   /**
    * 获取主键值

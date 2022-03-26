@@ -23,8 +23,9 @@ public class MyControllerAdvice {
   @ResponseBody
   public Result exceptionHandler(Exception e) {
     // 获取异常信息，存放如ResponseResult的msg属性
-    String message = e.getMessage();
+    String message = e.getLocalizedMessage();
     log.error("异常信息：{}", message);
+    e.printStackTrace();
     Result result = new Result();
     // 把ResponseResult作为返回值返回，要求到时候转换成json存入响应体中
     return result.success(false).code(500).message(message).data(null);

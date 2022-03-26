@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,8 +19,8 @@ import lombok.NoArgsConstructor;
 /**
  * 客户信息表(BaseCustomerInfo)表实体类
  *
- * @author tang
- * @since 2022-03-14 10:03:01
+ * @author makejava
+ * @since 2022-03-26 15:18:10
  */
 @Data
 @NoArgsConstructor
@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @TableName("base_customer_info")
 public class BaseCustomerInfo extends Model<BaseCustomerInfo> {
-  private static final long serialVersionUID = 2400657522373123542L;
+  private static final long serialVersionUID = -519356144554648802L;
   /** 编号 * */
   @TableId(value = "id", type = IdType.AUTO)
   private Long id;
@@ -52,14 +52,10 @@ public class BaseCustomerInfo extends Model<BaseCustomerInfo> {
   private String email;
   /** 创建时间 * */
   @TableField(fill = FieldFill.INSERT)
-  private Date createTime;
+  private LocalDateTime createTime;
   /** 更新时间 * */
   @TableField(fill = FieldFill.INSERT_UPDATE)
-  private Date updateTime;
-  /** 创建者id * */
-  private Long createBy;
-  /** 更新者id * */
-  private Long updateBy;
+  private LocalDateTime updateTime;
   /** 删除标记 * */
   private Integer delFlag;
   /** 版本号 * */

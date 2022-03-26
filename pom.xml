@@ -10,8 +10,7 @@
     </parent>
     <groupId>com.example</groupId>
     <artifactId>mall</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>mall</name>
     <description>mall</description>
     <properties>
@@ -44,13 +43,6 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-        <!--   tomcat     -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <version>2.6.4</version>
-            <scope>provided</scope>
-        </dependency>
         <!--   test     -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -75,12 +67,6 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.27</version>
         </dependency>
-        <!--redis依赖-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-            <version>2.6.4</version>
-        </dependency>
         <!--fastjson依赖-->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -96,6 +82,7 @@
     </dependencies>
 
     <build>
+        <finalName>mall</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -42,6 +42,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     String token = request.getHeader("Authorization");
     // 判断token是否为空
     if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
+      token = token.substring(7);
       // 解析token
       String userId = this.parseJwt(token);
       // 从redis中获取用户信息
@@ -65,7 +66,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     if (Objects.isNull(oldToken)) {
       throw new CustomException("登录过期，请重新登录");
     }
-    if (!oldToken.equals(curToken.substring(7))) {
+    if (!oldToken.equals(curToken)) {
       throw new CustomException("您已经在其他地方登录，请重新登录");
     }
     String redisKey = "user:info:" + userId;
@@ -75,7 +76,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
   private String parseJwt(String token) {
     String userId;
     try {
-      Claims claims = JwtUtil.parseJWT(token.substring(7));
+      Claims claims = JwtUtil.parseJWT(token);
       userId = claims.getSubject();
     } catch (Exception e) {
       throw new CustomException("token解析失败");

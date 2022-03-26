@@ -6,6 +6,7 @@ import com.example.mall.entity.BaseUser;
 import com.example.mall.entity.LoginUser;
 import com.example.mall.exception.CustomException;
 import com.example.mall.service.LoginService;
+import com.example.mall.utils.IpUtil;
 import com.example.mall.utils.JwtUtil;
 import com.example.mall.utils.RedisCache;
 
@@ -15,9 +16,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -33,9 +36,10 @@ import lombok.extern.log4j.Log4j2;
 public class LoginServiceImpl extends ServiceImpl<BaseUserDao, BaseUser> implements LoginService {
   @Resource() private AuthenticationManager authenticationManager;
   @Resource() private RedisCache redisCache;
+  @Resource() private BaseUserDao baseUserDao;
 
   @Override
-  public String login(BaseUser user) {
+  public String login(BaseUser user, HttpServletRequest request) {
     // AuthenticationManager authenticate 进行用户认证
     UsernamePasswordAuthenticationToken authenticationToken =
         new UsernamePasswordAuthenticationToken(user.getPhone(), user.getPassword());
@@ -48,6 +52,13 @@ public class LoginServiceImpl extends ServiceImpl<BaseUserDao, BaseUser> impleme
     LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
     String userName = authenticationToken.getName();
     String jwt = JwtUtil.createJWT(userName);
+    // 修改用户登录时间和登录ip
+    user.setLastLoginTime(LocalDateTime.now());
+    String ipAddr = IpUtil.getIpAddr(request);
+    long ip = IpUtil.ip2Long(ipAddr);
+    user.setLastLoginIp(ip);
+    // 将用户登录时间和登录ip更新到数据库
+    this.baseUserDao.updateById(user);
     // 将用户信息和token分别存入redis
     this.redisCache.setCacheObject(
         "user:info:" + userName, loginUser, 3 * 60 * 60 * 1000, TimeUnit.MILLISECONDS);

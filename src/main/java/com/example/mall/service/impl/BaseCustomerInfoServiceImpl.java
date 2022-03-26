@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 /**
  * 客户信息表(BaseCustomerInfo)表服务实现类
  *
- * @author tang
- * @since 2022-03-14 10:03:01
+ * @author makejava
+ * @since 2022-03-26 15:18:10
  */
 @Service("baseCustomerInfoService")
 public class BaseCustomerInfoServiceImpl extends ServiceImpl<BaseCustomerInfoDao, BaseCustomerInfo>

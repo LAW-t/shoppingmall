@@ -10,8 +10,8 @@ import java.util.List;
 /**
  * 客户信息表(BaseCustomerInfo)表数据库访问层
  *
- * @author tang
- * @since 2022-03-14 10:03:01
+ * @author makejava
+ * @since 2022-03-26 15:18:10
  */
 public interface BaseCustomerInfoDao extends BaseMapper<BaseCustomerInfo> {
 
@@ -30,5 +30,5 @@ public interface BaseCustomerInfoDao extends BaseMapper<BaseCustomerInfo> {
    * @return 影响行数
    * @throws org.springframework.jdbc.BadSqlGrammarException 入参是空List的时候会抛SQL语句错误的异常，请自行校验入参
    */
-  int insertOrUpdateBatch(@Param("entities") List<BaseCustomerInfo> entities);
+  int updateOne(@Param("entities") BaseCustomerInfo entities);
 }

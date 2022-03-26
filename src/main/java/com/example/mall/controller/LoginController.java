@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -28,9 +29,9 @@ public class LoginController {
   @Resource private LoginService loginService;
 
   @PostMapping("/login")
-  public Result login(@RequestBody BaseUser user) {
-    log.info(user);
-    String token = this.loginService.login(user);
+  public Result login(@RequestBody BaseUser user, HttpServletRequest request) {
+    log.info(user + "用户登录");
+    String token = this.loginService.login(user, request);
     return Result.success(token);
   }
 
