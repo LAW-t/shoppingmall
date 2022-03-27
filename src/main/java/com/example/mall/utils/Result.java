@@ -22,18 +22,18 @@ public class Result {
   private Object data;
 
   public static Result of(Object data) {
-    if (data != null) {
-      return new Result()
-          .success(ResultCodeEnum.SUCCESS.isSuccess())
-          .code(ResultCodeEnum.SUCCESS.getCode())
-          .message(ResultCodeEnum.SUCCESS.getMessage())
-          .data(data);
-    } else {
+    if (data == null || Boolean.FALSE.equals(data)) {
       return new Result()
           .success(ResultCodeEnum.UNKNOWN_REASON.isSuccess())
           .code(ResultCodeEnum.UNKNOWN_REASON.getCode())
           .message(ResultCodeEnum.UNKNOWN_REASON.getMessage())
           .data(null);
+    } else {
+      return new Result()
+          .success(ResultCodeEnum.SUCCESS.isSuccess())
+          .code(ResultCodeEnum.SUCCESS.getCode())
+          .message(ResultCodeEnum.SUCCESS.getMessage())
+          .data(data);
     }
   }
   /**

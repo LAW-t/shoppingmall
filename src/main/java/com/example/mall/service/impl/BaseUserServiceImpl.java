@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -81,6 +82,44 @@ public class BaseUserServiceImpl extends ServiceImpl<BaseUserDao, BaseUser>
     // 插入用户
     int insert = this.baseUserDao.insert(baseUser);
     return insert > 0;
+  }
+
+  @Override
+  public boolean updateUser(BaseUser updatedUser, BaseUser currentUser) {
+    // 判断是否有权限修改
+    boolean renewable =
+        currentUser.getType() == Authority.ADMIN.getValue()
+            || Objects.equals(currentUser.getId(), updatedUser.getId());
+    // 如果没有权限修改，抛出异常
+    if (!renewable) {
+      throw new CustomException("您没有权限修改此用户");
+    }
+    // 敏感字段不可修改
+    updatedUser.setType(null);
+    updatedUser.setCustomerInfoId(null);
+    updatedUser.setLastLoginIp(null);
+    updatedUser.setLastLoginTime(null);
+    updatedUser.setCreateTime(null);
+    updatedUser.setDelFlag(null);
+    // 将密码加密
+    updatedUser.setPassword(new BCryptPasswordEncoder().encode(updatedUser.getPassword()));
+    // 更新数据库
+    int update = this.baseUserDao.updateById(updatedUser);
+    return update > 0;
+  }
+
+  @Override
+  public int deleteUsers(List<Long> idList, BaseUser currentUser) {
+    // 判断是否有权限删除
+    boolean renewable =
+        currentUser.getType() == Authority.ADMIN.getValue()
+            || (idList.size() == 1 && Objects.equals(currentUser.getId(), idList.get(0)));
+    // 如果没有权限删除，抛出异常
+    if (!renewable) {
+      throw new CustomException("您没有权限删除此用户");
+    }
+    // 尝试删除用户
+    return this.baseUserDao.deleteBatchIds(idList);
   }
 
   private void setDefaultValue(

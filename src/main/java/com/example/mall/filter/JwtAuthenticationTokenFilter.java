@@ -44,8 +44,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
     // 如果是允许访问的url，直接放行
     for (String url : this.allowAccess.getUrl()) {
-      log.error("url:" + url);
-      log.error("request.getRequestURI():" + request.getRequestURI());
       if (request.getRequestURI().contains(url)) {
         filterChain.doFilter(request, response);
         return;

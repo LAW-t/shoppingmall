@@ -30,7 +30,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
       AuthenticationException e)
       throws IOException, ServletException {
     Result result = new Result();
-    result.success(false).code(401).data(null);
+    result.success(false).code(401).data(null).message("认证失败: " + e.getMessage());
     String jsonString = JSON.toJSONString(result);
     WebUtil.renderString(httpServletResponse, jsonString);
   }

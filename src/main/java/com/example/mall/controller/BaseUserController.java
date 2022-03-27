@@ -1,7 +1,9 @@
 package com.example.mall.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.mall.annotations.UserInfo;
 import com.example.mall.entity.BaseUser;
+import com.example.mall.enums.ResultCodeEnum;
 import com.example.mall.service.BaseUserService;
 import com.example.mall.utils.Result;
 
@@ -88,8 +90,9 @@ public class BaseUserController {
    * @return 修改结果
    */
   @PutMapping
-  public Result update(@RequestBody BaseUser baseUser) {
-    return Result.of(this.baseUserService.updateById(baseUser));
+  @PreAuthorize("hasAnyAuthority('admin', 'user')")
+  public Result update(@RequestBody BaseUser baseUser, @UserInfo BaseUser user) {
+    return Result.of(this.baseUserService.updateUser(baseUser, user));
   }
 
   /**
@@ -99,7 +102,17 @@ public class BaseUserController {
    * @return 删除结果
    */
   @DeleteMapping
-  public Result delete(@RequestParam("idList") List<Long> idList) {
-    return Result.of(this.baseUserService.removeByIds(idList));
+  @PreAuthorize("hasAnyAuthority('admin', 'user')")
+  public Result delete(@RequestParam("idList") List<Long> idList, @UserInfo BaseUser user) {
+    int deleteUsers = this.baseUserService.deleteUsers(idList, user);
+    boolean successDelete = deleteUsers == idList.size();
+    return new Result()
+        .success(successDelete)
+        .data(deleteUsers)
+        .message("成功删除" + deleteUsers + "条数据")
+        .code(
+            successDelete
+                ? ResultCodeEnum.SUCCESS.getCode()
+                : ResultCodeEnum.PARTIAL_SUCCESS.getCode());
   }
 }

@@ -16,11 +16,62 @@ import javax.servlet.http.HttpServletRequest;
  * @since 2022-03-26 16:24:15
  */
 public interface BaseUserService extends IService<BaseUser> {
+  /**
+   * 获取用户列表
+   *
+   * @param page 页面
+   * @param baseUser 基本用户
+   * @return {@link List }<{@link BaseUser }>
+   * @since 2022/03/27
+   */
   List<BaseUser> getList(Page<BaseUser> page, BaseUser baseUser);
 
+  /**
+   * 根据id查询用户
+   *
+   * @param id id
+   * @return {@link BaseUser }
+   * @since 2022/03/27
+   */
   BaseUser getUserById(Serializable id);
 
+  /**
+   * 添加管理员
+   *
+   * @param baseUser 基本用户
+   * @param request 请求
+   * @return boolean
+   * @since 2022/03/27
+   */
   boolean addAdmin(BaseUser baseUser, HttpServletRequest request);
 
+  /**
+   * 添加用户
+   *
+   * @param baseUser 基本用户
+   * @param request 请求
+   * @return boolean
+   * @since 2022/03/27
+   */
   boolean addUser(BaseUser baseUser, HttpServletRequest request);
+
+  /**
+   * 更新用户
+   *
+   * @param baseUser 基本用户
+   * @param user 用户
+   * @return boolean
+   * @since 2022/03/27
+   */
+  boolean updateUser(BaseUser baseUser, BaseUser user);
+
+  /**
+   * 删除用户
+   *
+   * @param idList id列表
+   * @param user 用户
+   * @return boolean
+   * @since 2022/03/27
+   */
+  int deleteUsers(List<Long> idList, BaseUser user);
 }
