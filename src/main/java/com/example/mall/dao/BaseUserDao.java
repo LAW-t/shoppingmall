@@ -11,7 +11,7 @@ import java.util.List;
  * 用户表(BaseUser)表数据库访问层
  *
  * @author makejava
- * @since 2022-03-26 15:18:11
+ * @since 2022-03-26 16:24:15
  */
 public interface BaseUserDao extends BaseMapper<BaseUser> {
 

@@ -1,5 +1,6 @@
 package com.example.mall.filter;
 
+import com.example.mall.entity.AllowAccess;
 import com.example.mall.entity.LoginUser;
 import com.example.mall.exception.CustomException;
 import com.example.mall.utils.JwtUtil;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import io.jsonwebtoken.Claims;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * jwt认证过滤器
@@ -30,14 +32,25 @@ import io.jsonwebtoken.Claims;
  * @date 2022/3/14 19:04
  */
 @Component
+@Log4j2
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
   @Resource private RedisCache redisCache;
+  @Resource private AllowAccess allowAccess;
 
   @Override
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
+    // 如果是允许访问的url，直接放行
+    for (String url : this.allowAccess.getUrl()) {
+      log.error("url:" + url);
+      log.error("request.getRequestURI():" + request.getRequestURI());
+      if (request.getRequestURI().contains(url)) {
+        filterChain.doFilter(request, response);
+        return;
+      }
+    }
     // 获取请求头中的token
     String token = request.getHeader("Authorization");
     // 判断token是否为空

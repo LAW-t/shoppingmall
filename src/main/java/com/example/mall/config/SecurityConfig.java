@@ -1,5 +1,6 @@
 package com.example.mall.config;
 
+import com.example.mall.entity.AllowAccess;
 import com.example.mall.filter.JwtAuthenticationTokenFilter;
 
 import org.springframework.context.annotation.Bean;
@@ -31,6 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Resource private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
   @Resource private AccessDeniedHandler accessDeniedHandler;
   @Resource private AuthenticationEntryPoint authenticationEntryPoint;
+  @Resource private AllowAccess allowAccess;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -48,9 +50,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeRequests()
-        // 对于登录接口 允许匿名访问
-        .antMatchers("/login")
-        .anonymous()
+        // 对于以下接口 允许匿名访问
+        .antMatchers(this.allowAccess.getUrl().toArray(new String[0]))
+        .permitAll()
         // 除上面外的所有请求全部需要鉴权认证
         .anyRequest()
         .authenticated();

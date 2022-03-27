@@ -1,11 +1,11 @@
 package com.example.mall.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mall.entity.BaseUser;
 import com.example.mall.service.BaseUserService;
 import com.example.mall.utils.Result;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 用户表(BaseUser)表控制层
@@ -28,7 +29,7 @@ import javax.annotation.Resource;
  * @since 2022-03-25 19:25:33
  */
 @RestController
-@RequestMapping("baseUser")
+@RequestMapping("user")
 public class BaseUserController {
   /** 服务对象 */
   @Resource private BaseUserService baseUserService;
@@ -41,8 +42,9 @@ public class BaseUserController {
    * @return 所有数据
    */
   @GetMapping
+  @PreAuthorize("hasAnyAuthority('admin')")
   public Result selectAll(Page<BaseUser> page, BaseUser baseUser) {
-    return Result.of(this.baseUserService.page(page, new QueryWrapper<>(baseUser)));
+    return Result.of(this.baseUserService.getList(page, baseUser));
   }
 
   /**
@@ -52,21 +54,33 @@ public class BaseUserController {
    * @return 单条数据
    */
   @GetMapping("{id}")
+  @PreAuthorize("hasAnyAuthority('admin')")
   public Result selectOne(@PathVariable Serializable id) {
-    return Result.of(this.baseUserService.getById(id));
+    return Result.of(this.baseUserService.getUserById(id));
   }
 
   /**
-   * 新增数据
+   * 新增管理员
    *
    * @param baseUser 实体对象
    * @return 新增结果
    */
-  @PostMapping
-  public Result insert(@RequestBody BaseUser baseUser) {
-    return Result.of(this.baseUserService.save(baseUser));
+  @PostMapping("register/admin")
+  @PreAuthorize("hasAnyAuthority('admin')")
+  public Result insertAdmin(@RequestBody BaseUser baseUser, HttpServletRequest request) {
+    return Result.of(this.baseUserService.addAdmin(baseUser, request));
   }
 
+  /**
+   * 新增普通用户
+   *
+   * @param baseUser 实体对象
+   * @return 新增结果
+   */
+  @PostMapping("register")
+  public Result insertUser(@RequestBody BaseUser baseUser, HttpServletRequest request) {
+    return Result.of(this.baseUserService.addUser(baseUser, request));
+  }
   /**
    * 修改数据
    *

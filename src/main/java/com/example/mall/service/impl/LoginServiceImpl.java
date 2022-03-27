@@ -53,6 +53,7 @@ public class LoginServiceImpl extends ServiceImpl<BaseUserDao, BaseUser> impleme
     String userName = authenticationToken.getName();
     String jwt = JwtUtil.createJWT(userName);
     // 修改用户登录时间和登录ip
+    user = loginUser.getUser();
     user.setLastLoginTime(LocalDateTime.now());
     String ipAddr = IpUtil.getIpAddr(request);
     long ip = IpUtil.ip2Long(ipAddr);

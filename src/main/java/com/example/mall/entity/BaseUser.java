@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
  * 用户表(BaseUser)表实体类
  *
  * @author makejava
- * @since 2022-03-26 15:18:11
+ * @since 2022-03-26 16:24:15
  */
 @Data
 @NoArgsConstructor
@@ -27,7 +28,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @TableName("base_user")
 public class BaseUser extends Model<BaseUser> {
-  private static final long serialVersionUID = 280098755402820485L;
+  private static final long serialVersionUID = -7697045572363908450L;
   /** 编号 * */
   @TableId(value = "id", type = IdType.AUTO)
   private Long id;
@@ -48,16 +49,15 @@ public class BaseUser extends Model<BaseUser> {
   /** 创建时间 * */
   @TableField(fill = FieldFill.INSERT)
   private LocalDateTime createTime;
-  /** 创建用户id * */
-  private Long createBy;
-  /** 更新用户id * */
-  private Long updateBy;
   /** 删除标记（0表示未删除，1表示已删除） * */
-  private Integer delFlag;
+  @JsonIgnore private Integer delFlag;
   /** 最后一次登录时间 * */
   private LocalDateTime lastLoginTime;
   /** ip地址 * */
-  private Long lastLoginIp;
+  @JsonIgnore private Long lastLoginIp;
+  /** 可读性更高的ip地址 */
+  @TableField(exist = false)
+  private String ip;
 
   /**
    * 获取主键值
