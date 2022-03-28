@@ -95,6 +95,8 @@ public class BaseUserServiceImpl extends ServiceImpl<BaseUserDao, BaseUser>
     if (!renewable) {
       throw new CustomException("您没有权限修改此用户");
     }
+    // 判断是否存在相同手机号
+    this.exist(updatedUser);
     // 敏感字段不可修改
     updatedUser.setType(null);
     updatedUser.setCustomerInfoId(null);
