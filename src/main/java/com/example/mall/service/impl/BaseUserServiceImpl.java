@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -118,8 +119,20 @@ public class BaseUserServiceImpl extends ServiceImpl<BaseUserDao, BaseUser>
     if (!renewable) {
       throw new CustomException("您没有权限删除此用户");
     }
+    // 获取用户关联的客户信息
+    LambdaQueryWrapper<BaseCustomerInfo> queryWrapper = new LambdaQueryWrapper<>();
+    queryWrapper.in(BaseCustomerInfo::getId, idList);
+    List<Long> customerInfoIdList =
+        this.baseCustomerInfoDao.selectList(queryWrapper).stream()
+            .filter(info -> info != null && info.getId() > 0)
+            .map(BaseCustomerInfo::getId)
+            .collect(Collectors.toList());
     // 尝试删除用户
-    return this.baseUserDao.deleteBatchIds(idList);
+    int deleteBatchIds = this.baseUserDao.deleteBatchIds(idList);
+    // 尝试删除客户信息
+    this.baseCustomerInfoDao.deleteBatchIds(customerInfoIdList);
+
+    return deleteBatchIds;
   }
 
   private void setDefaultValue(
