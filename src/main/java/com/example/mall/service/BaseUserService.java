@@ -74,4 +74,15 @@ public interface BaseUserService extends IService<BaseUser> {
    * @since 2022/03/27
    */
   int deleteUsers(List<Long> idList, BaseUser user);
+
+  /**
+   * 按关键字搜索用户
+   *
+   * @param id id
+   * @param nickname 昵称
+   * @param phone 电话
+   * @return {@link List }<{@link BaseUser }>
+   * @since 2022/03/29
+   */
+  List<BaseUser> searchUser(Page<BaseUser> page, String id, String nickname, String phone);
 }

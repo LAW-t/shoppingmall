@@ -62,6 +62,25 @@ public class BaseUserController {
   }
 
   /**
+   * 搜索
+   *
+   * @param id id
+   * @param nickname 昵称
+   * @param phone 电话
+   * @return {@link Result }
+   * @since 2022/03/29
+   */
+  @GetMapping("search")
+  @PreAuthorize("hasAnyAuthority('admin')")
+  public Result search(
+      @RequestParam String id,
+      @RequestParam String nickname,
+      @RequestParam String phone,
+      Page<BaseUser> page) {
+    return Result.of(this.baseUserService.searchUser(page, id, nickname, phone));
+  }
+
+  /**
    * 新增管理员
    *
    * @param baseUser 实体对象
@@ -83,6 +102,7 @@ public class BaseUserController {
   public Result insertUser(@RequestBody BaseUser baseUser, HttpServletRequest request) {
     return Result.of(this.baseUserService.addUser(baseUser, request));
   }
+
   /**
    * 修改数据
    *

@@ -15,6 +15,7 @@ import com.example.mall.utils.IpUtil;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -135,6 +136,21 @@ public class BaseUserServiceImpl extends ServiceImpl<BaseUserDao, BaseUser>
     this.baseCustomerInfoDao.deleteBatchIds(customerInfoIdList);
 
     return deleteBatchIds;
+  }
+
+  @Override
+  public List<BaseUser> searchUser(Page<BaseUser> page, String id, String nickname, String phone) {
+    LambdaQueryWrapper<BaseUser> queryWrapper = new LambdaQueryWrapper<>();
+    if (StringUtils.hasText(id)) {
+      queryWrapper.eq(BaseUser::getId, id);
+    }
+    if (StringUtils.hasText(nickname)) {
+      queryWrapper.like(BaseUser::getNickname, nickname);
+    }
+    if (StringUtils.hasText(phone)) {
+      queryWrapper.like(BaseUser::getPhone, phone);
+    }
+    return this.baseUserDao.selectList(queryWrapper);
   }
 
   private void setDefaultValue(
