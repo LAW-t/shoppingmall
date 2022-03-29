@@ -139,18 +139,13 @@ public class BaseUserServiceImpl extends ServiceImpl<BaseUserDao, BaseUser>
   }
 
   @Override
-  public List<BaseUser> searchUser(Page<BaseUser> page, String id, String nickname, String phone) {
+  public Page<BaseUser> search(Page<BaseUser> page, String id, String nickname, String phone) {
     LambdaQueryWrapper<BaseUser> queryWrapper = new LambdaQueryWrapper<>();
-    if (StringUtils.hasText(id)) {
-      queryWrapper.eq(BaseUser::getId, id);
-    }
-    if (StringUtils.hasText(nickname)) {
-      queryWrapper.like(BaseUser::getNickname, nickname);
-    }
-    if (StringUtils.hasText(phone)) {
-      queryWrapper.like(BaseUser::getPhone, phone);
-    }
-    return this.baseUserDao.selectList(queryWrapper);
+    queryWrapper.eq(StringUtils.hasText(id), BaseUser::getId, id);
+    queryWrapper.like(StringUtils.hasText(nickname), BaseUser::getNickname, nickname);
+    queryWrapper.like(StringUtils.hasText(phone), BaseUser::getPhone, phone);
+
+    return this.baseUserDao.selectPage(page, queryWrapper);
   }
 
   private void setDefaultValue(

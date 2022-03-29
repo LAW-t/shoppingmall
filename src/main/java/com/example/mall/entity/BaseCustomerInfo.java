@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -57,9 +58,9 @@ public class BaseCustomerInfo extends Model<BaseCustomerInfo> {
   @TableField(fill = FieldFill.INSERT_UPDATE)
   private LocalDateTime updateTime;
   /** 删除标记 * */
-  private Integer delFlag;
+  @JsonIgnore private Integer delFlag;
   /** 版本号 * */
-  @Version private Integer version;
+  @Version @JsonIgnore private Integer version;
 
   /**
    * 获取主键值

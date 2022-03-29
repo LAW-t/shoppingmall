@@ -84,5 +84,5 @@ public interface BaseUserService extends IService<BaseUser> {
    * @return {@link List }<{@link BaseUser }>
    * @since 2022/03/29
    */
-  List<BaseUser> searchUser(Page<BaseUser> page, String id, String nickname, String phone);
+  Page<BaseUser> search(Page<BaseUser> page, String id, String nickname, String phone);
 }

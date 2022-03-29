@@ -72,12 +72,8 @@ public class BaseUserController {
    */
   @GetMapping("search")
   @PreAuthorize("hasAnyAuthority('admin')")
-  public Result search(
-      @RequestParam String id,
-      @RequestParam String nickname,
-      @RequestParam String phone,
-      Page<BaseUser> page) {
-    return Result.of(this.baseUserService.searchUser(page, id, nickname, phone));
+  public Result search(String id, String nickname, String phone, Page<BaseUser> page) {
+    return Result.of(this.baseUserService.search(page, id, nickname, phone));
   }
 
   /**

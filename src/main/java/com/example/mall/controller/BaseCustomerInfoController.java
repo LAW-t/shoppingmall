@@ -2,7 +2,9 @@ package com.example.mall.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.mall.annotations.UserInfo;
 import com.example.mall.entity.BaseCustomerInfo;
+import com.example.mall.entity.BaseUser;
 import com.example.mall.service.BaseCustomerInfoService;
 import com.example.mall.utils.Result;
 
@@ -10,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +43,7 @@ public class BaseCustomerInfoController {
    * @return 所有数据
    */
   @GetMapping
-  @PreAuthorize("hasAnyAuthority('admin', 'user')")
+  @PreAuthorize("hasAnyAuthority('admin')")
   public Result selectAll(Page<BaseCustomerInfo> page, BaseCustomerInfo baseCustomerInfo) {
     return Result.of(this.baseCustomerInfoService.page(page, new QueryWrapper<>(baseCustomerInfo)));
   }
@@ -54,21 +55,9 @@ public class BaseCustomerInfoController {
    * @return 单条数据
    */
   @GetMapping("{id}")
-  @PreAuthorize("hasAnyAuthority('admin')")
+  @PreAuthorize("hasAnyAuthority('admin', 'user')")
   public Result selectOne(@PathVariable Serializable id) {
     return Result.of(this.baseCustomerInfoService.getById(id));
-  }
-
-  /**
-   * 新增数据
-   *
-   * @param baseCustomerInfo 实体对象
-   * @return 新增结果
-   */
-  @PostMapping
-  @PreAuthorize("hasAnyAuthority('admin', 'user')")
-  public Result insert(@RequestBody BaseCustomerInfo baseCustomerInfo) {
-    return Result.of(this.baseCustomerInfoService.save(baseCustomerInfo));
   }
 
   /**
@@ -79,8 +68,9 @@ public class BaseCustomerInfoController {
    */
   @PutMapping
   @PreAuthorize("hasAnyAuthority('admin', 'user')")
-  public Result update(@RequestBody BaseCustomerInfo baseCustomerInfo) {
-    return Result.of(this.baseCustomerInfoService.updateById(baseCustomerInfo));
+  public Result update(
+      @RequestBody BaseCustomerInfo baseCustomerInfo, @UserInfo BaseUser baseUser) {
+    return Result.of(this.baseCustomerInfoService.updateUserInfo(baseCustomerInfo, baseUser));
   }
 
   /**
@@ -91,7 +81,13 @@ public class BaseCustomerInfoController {
    */
   @DeleteMapping
   @PreAuthorize("hasAnyAuthority('admin', 'user')")
-  public Result delete(@RequestParam("idList") List<Long> idList) {
-    return Result.of(this.baseCustomerInfoService.removeByIds(idList));
+  public Result delete(@RequestParam("idList") List<Long> idList, @UserInfo BaseUser baseUser) {
+    return Result.of(this.baseCustomerInfoService.deleteUserInfo(idList, baseUser));
+  }
+
+  @GetMapping("/search")
+  @PreAuthorize("hasAnyAuthority('admin')")
+  public Result search(Page<BaseCustomerInfo> page, BaseCustomerInfo baseCustomerInfo) {
+    return Result.of(this.baseCustomerInfoService.search(page, baseCustomerInfo));
   }
 }
