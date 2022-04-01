@@ -30,10 +30,11 @@ public interface BaseUserService extends IService<BaseUser> {
    * 根据id查询用户
    *
    * @param id id
+   * @param currentUser
    * @return {@link BaseUser }
    * @since 2022/03/27
    */
-  BaseUser getUserById(Serializable id);
+  BaseUser getUserById(Serializable id, BaseUser currentUser);
 
   /**
    * 添加管理员
@@ -76,13 +77,14 @@ public interface BaseUserService extends IService<BaseUser> {
   int deleteUsers(List<Long> idList, BaseUser user);
 
   /**
-   * 按关键字搜索用户
+   * 搜索
    *
+   * @param page 页面
    * @param id id
    * @param nickname 昵称
    * @param phone 电话
-   * @return {@link List }<{@link BaseUser }>
-   * @since 2022/03/29
+   * @return {@link Page }<{@link BaseUser }>
+   * @since 2022/03/31
    */
   Page<BaseUser> search(Page<BaseUser> page, String id, String nickname, String phone);
 }

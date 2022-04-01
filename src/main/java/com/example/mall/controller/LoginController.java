@@ -1,6 +1,7 @@
 package com.example.mall.controller;
 
 import com.example.mall.entity.BaseUser;
+import com.example.mall.service.BaseCustomerInfoService;
 import com.example.mall.service.LoginService;
 import com.example.mall.utils.Result;
 
@@ -27,12 +28,12 @@ import lombok.extern.log4j.Log4j2;
 public class LoginController {
 
   @Resource private LoginService loginService;
+  @Resource private BaseCustomerInfoService baseCustomerInfoService;
 
   @PostMapping("/login")
   public Result login(@RequestBody BaseUser user, HttpServletRequest request) {
     log.info(user + "用户登录");
-    String token = this.loginService.login(user, request);
-    return Result.success(token);
+    return Result.of(this.loginService.login(user, request));
   }
 
   @PostMapping("/Logout")

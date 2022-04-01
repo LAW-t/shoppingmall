@@ -1,7 +1,9 @@
 package com.example.mall.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.mall.dao.BaseCustomerInfoDao;
 import com.example.mall.dao.BaseUserDao;
+import com.example.mall.entity.BaseCustomerInfo;
 import com.example.mall.entity.BaseUser;
 import com.example.mall.entity.LoginUser;
 import com.example.mall.exception.CustomException;
@@ -9,6 +11,7 @@ import com.example.mall.service.LoginService;
 import com.example.mall.utils.IpUtil;
 import com.example.mall.utils.JwtUtil;
 import com.example.mall.utils.RedisCache;
+import com.example.mall.vo.UserInfoVo;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,9 +40,10 @@ public class LoginServiceImpl extends ServiceImpl<BaseUserDao, BaseUser> impleme
   @Resource() private AuthenticationManager authenticationManager;
   @Resource() private RedisCache redisCache;
   @Resource() private BaseUserDao baseUserDao;
+  @Resource() private BaseCustomerInfoDao baseCustomerInfoDao;
 
   @Override
-  public String login(BaseUser user, HttpServletRequest request) {
+  public UserInfoVo login(BaseUser user, HttpServletRequest request) {
     // AuthenticationManager authenticate 进行用户认证
     UsernamePasswordAuthenticationToken authenticationToken =
         new UsernamePasswordAuthenticationToken(user.getPhone(), user.getPassword());
@@ -60,12 +64,15 @@ public class LoginServiceImpl extends ServiceImpl<BaseUserDao, BaseUser> impleme
     user.setLastLoginIp(ip);
     // 将用户登录时间和登录ip更新到数据库
     this.baseUserDao.updateById(user);
+    // 获取用户信息的vo对象
+    UserInfoVo userInfo = this.getUserInfo(user, jwt);
     // 将用户信息和token分别存入redis
     this.redisCache.setCacheObject(
         "user:info:" + userName, loginUser, 3 * 60 * 60 * 1000, TimeUnit.MILLISECONDS);
     this.redisCache.setCacheObject(
         "user:token:" + userName, jwt, 3 * 60 * 60 * 1000, TimeUnit.MILLISECONDS);
-    return jwt;
+    // 返回用户信息
+    return userInfo;
   }
 
   @Override
@@ -78,5 +85,26 @@ public class LoginServiceImpl extends ServiceImpl<BaseUserDao, BaseUser> impleme
     this.redisCache.deleteObject("user:info:" + userName);
     this.redisCache.deleteObject("user:token:" + userName);
     return true;
+  }
+
+  private UserInfoVo getUserInfo(BaseUser user, String jwt) {
+    // 获取客户信息
+    UserInfoVo userInfoVo = new UserInfoVo();
+    if (user.getCustomerInfoId() != 0) {
+      BaseCustomerInfo baseCustomerInfo =
+          this.baseCustomerInfoDao.selectById(user.getCustomerInfoId());
+      userInfoVo.setRealName(baseCustomerInfo.getRealName());
+      userInfoVo.setAddrProvince(baseCustomerInfo.getAddrProvince());
+      userInfoVo.setAddrCity(baseCustomerInfo.getAddrCity());
+      userInfoVo.setAddrDistrict(baseCustomerInfo.getAddrDistrict());
+      userInfoVo.setAddrDetailed(baseCustomerInfo.getAddrDetailed());
+      userInfoVo.setEmail(baseCustomerInfo.getEmail());
+    }
+    userInfoVo.setId(user.getId());
+    userInfoVo.setPhone(user.getPhone());
+    userInfoVo.setType(user.getType());
+    userInfoVo.setNickname(user.getNickname());
+    userInfoVo.setToken(jwt);
+    return userInfoVo;
   }
 }

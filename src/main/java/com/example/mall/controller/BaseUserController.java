@@ -56,9 +56,9 @@ public class BaseUserController {
    * @return 单条数据
    */
   @GetMapping("{id}")
-  @PreAuthorize("hasAnyAuthority('admin')")
-  public Result selectOne(@PathVariable Serializable id) {
-    return Result.of(this.baseUserService.getUserById(id));
+  @PreAuthorize("hasAnyAuthority('admin', 'user')")
+  public Result selectOne(@PathVariable Serializable id, @UserInfo BaseUser user) {
+    return Result.of(this.baseUserService.getUserById(id, user));
   }
 
   /**

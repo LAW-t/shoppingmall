@@ -11,6 +11,7 @@ import com.example.mall.enums.Authority;
 import com.example.mall.exception.CustomException;
 import com.example.mall.service.BaseUserService;
 import com.example.mall.utils.IpUtil;
+import com.example.mall.utils.RedisCache;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ public class BaseUserServiceImpl extends ServiceImpl<BaseUserDao, BaseUser>
     implements BaseUserService {
   @Resource private BaseUserDao baseUserDao;
   @Resource private BaseCustomerInfoDao baseCustomerInfoDao;
+  @Resource private RedisCache redisCache;
 
   @Override
   public List<BaseUser> getList(Page<BaseUser> page, BaseUser baseUser) {
@@ -52,7 +54,15 @@ public class BaseUserServiceImpl extends ServiceImpl<BaseUserDao, BaseUser>
   }
 
   @Override
-  public BaseUser getUserById(Serializable id) {
+  public BaseUser getUserById(Serializable id, BaseUser currentUser) {
+    // 是否有权限查看该用户
+    boolean gettable =
+        currentUser.getType() == Authority.ADMIN.getValue()
+            || Objects.equals(id, currentUser.getId());
+    if (!gettable) {
+      throw new CustomException("您没有权限查看该用户");
+    }
+    // 查询用户
     BaseUser user = this.baseUserDao.selectById(id);
     this.parseIp(user);
     return user;
@@ -115,11 +125,11 @@ public class BaseUserServiceImpl extends ServiceImpl<BaseUserDao, BaseUser>
   @Override
   public int deleteUsers(List<Long> idList, BaseUser currentUser) {
     // 判断是否有权限删除
-    boolean renewable =
+    boolean deletable =
         currentUser.getType() == Authority.ADMIN.getValue()
             || (idList.size() == 1 && Objects.equals(currentUser.getId(), idList.get(0)));
     // 如果没有权限删除，抛出异常
-    if (!renewable) {
+    if (!deletable) {
       throw new CustomException("您没有权限删除此用户");
     }
     // 获取用户关联的客户信息

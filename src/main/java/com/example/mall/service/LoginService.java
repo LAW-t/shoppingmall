@@ -2,6 +2,7 @@ package com.example.mall.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.mall.entity.BaseUser;
+import com.example.mall.vo.UserInfoVo;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,7 +21,7 @@ public interface LoginService extends IService<BaseUser> {
    * @param request
    * @return 登录结果
    */
-  String login(BaseUser user, HttpServletRequest request);
+  UserInfoVo login(BaseUser user, HttpServletRequest request);
   /**
    * 退出登录
    *

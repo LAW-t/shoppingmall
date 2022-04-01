@@ -5,8 +5,8 @@ spring:
     username: root
     password: tang0793
     driver-class-name: com.mysql.cj.jdbc.Driver
-  #  jackson:
-  #    default-property-inclusion: non_null
+  jackson:
+    default-property-inclusion: non_null
   redis:
     host: localhost
     port: 6379
