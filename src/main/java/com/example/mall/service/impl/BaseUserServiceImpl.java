@@ -45,12 +45,12 @@ public class BaseUserServiceImpl extends ServiceImpl<BaseUserDao, BaseUser>
   @Resource private RedisCache redisCache;
 
   @Override
-  public List<BaseUser> getList(Page<BaseUser> page, BaseUser baseUser) {
-    List<BaseUser> baseUsers = this.baseUserDao.selectList(null);
-    for (BaseUser user : baseUsers) {
+  public Page<BaseUser> getList(Page<BaseUser> page, BaseUser baseUser) {
+    Page<BaseUser> userPage = this.baseUserDao.selectPage(page, null);
+    for (BaseUser user : userPage.getRecords()) {
       this.parseIp(user);
     }
-    return baseUsers;
+    return userPage;
   }
 
   @Override

@@ -13,6 +13,8 @@ import com.example.mall.utils.JwtUtil;
 import com.example.mall.utils.RedisCache;
 import com.example.mall.vo.UserInfoVo;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,6 +44,10 @@ public class LoginServiceImpl extends ServiceImpl<BaseUserDao, BaseUser> impleme
   @Resource() private BaseUserDao baseUserDao;
   @Resource() private BaseCustomerInfoDao baseCustomerInfoDao;
 
+  @Value("${timeout.token:21600000}")
+  @NestedConfigurationProperty
+  private int timeout;
+
   @Override
   public UserInfoVo login(BaseUser user, HttpServletRequest request) {
     // AuthenticationManager authenticate 进行用户认证
@@ -68,9 +74,9 @@ public class LoginServiceImpl extends ServiceImpl<BaseUserDao, BaseUser> impleme
     UserInfoVo userInfo = this.getUserInfo(user, jwt);
     // 将用户信息和token分别存入redis
     this.redisCache.setCacheObject(
-        "user:info:" + userName, loginUser, 3 * 60 * 60 * 1000, TimeUnit.MILLISECONDS);
+        "user:info:" + userName, loginUser, this.timeout, TimeUnit.MILLISECONDS);
     this.redisCache.setCacheObject(
-        "user:token:" + userName, jwt, 3 * 60 * 60 * 1000, TimeUnit.MILLISECONDS);
+        "user:token:" + userName, jwt, this.timeout, TimeUnit.MILLISECONDS);
     // 返回用户信息
     return userInfo;
   }

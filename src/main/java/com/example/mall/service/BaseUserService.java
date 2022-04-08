@@ -21,10 +21,10 @@ public interface BaseUserService extends IService<BaseUser> {
    *
    * @param page 页面
    * @param baseUser 基本用户
-   * @return {@link List }<{@link BaseUser }>
-   * @since 2022/03/27
+   * @return {@link Page }<{@link BaseUser }>
+   * @since 2022/04/05
    */
-  List<BaseUser> getList(Page<BaseUser> page, BaseUser baseUser);
+  Page<BaseUser> getList(Page<BaseUser> page, BaseUser baseUser);
 
   /**
    * 根据id查询用户

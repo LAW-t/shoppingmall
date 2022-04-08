@@ -1,1 +1,9 @@
-{}
+{
+  "properties": [
+    {
+      "name": "timeout.token",
+      "type": "java.lang.Integer",
+      "description": "timeout token."
+    }
+  ]
+}
